@@ -173,6 +173,10 @@ NSAPropertyAssignSetter(setNavigationBar, @"_navigationBar");
     if (backgroundColor) {
         self.backgroundColor = backgroundColor;
     }
+    UIBarButtonItem *barButtonItem = [[UI7BarButtonItem alloc] initWithTitle:nil style:UIBarButtonItemStyleBordered target:nil action:nil];  // this may cause problem if some code depends on existance of this value.
+    barButtonItem.appearanceSuperview = self.backItem;
+    [barButtonItem _tintColorUpdated];
+    self.backItem.backBarButtonItem = barButtonItem;
 }
 
 //- (void)setItems:(NSArray *)items animated:(BOOL)animated {
@@ -188,7 +192,7 @@ NSAPropertyAssignSetter(setNavigationBar, @"_navigationBar");
         [barButtonItem _tintColorUpdated];
         self.backItem.backBarButtonItem = barButtonItem;
     }
-//    item.navigationBar = self;
+    item.navigationBar = self;
     [item _tintColorUpdated];
 }
 //

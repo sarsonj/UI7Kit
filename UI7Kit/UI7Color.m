@@ -16,7 +16,12 @@
 }
 
 - (UIColor *)highligtedColor {
-    return [self highligtedColorForBackgroundColor:[UIColor whiteColor]];
+    if (self == [UIColor whiteColor]) {
+        return [self highligtedColorForBackgroundColor:[UIColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0]];
+    } else {
+        return [self highligtedColorForBackgroundColor:[UIColor whiteColor]];
+    }
+    
 }
 
 @end
