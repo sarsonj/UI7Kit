@@ -173,10 +173,11 @@ NSAPropertyAssignSetter(setNavigationBar, @"_navigationBar");
     if (backgroundColor) {
         self.backgroundColor = backgroundColor;
     }
-    UIBarButtonItem *barButtonItem = [[UI7BarButtonItem alloc] initWithTitle:nil style:UIBarButtonItemStyleBordered target:nil action:nil];  // this may cause problem if some code depends on existance of this value.
+    UIBarButtonItem *barButtonItem = [[UI7BarButtonItem alloc] initWithTitle:NSLocalizedString(@"Back", @"") style:UIBarButtonItemStyleBordered target:nil action:nil];  // this may cause problem if some code depends on existance of this value.
     barButtonItem.appearanceSuperview = self.backItem;
     [barButtonItem _tintColorUpdated];
     self.backItem.backBarButtonItem = barButtonItem;
+        
 }
 
 //- (void)setItems:(NSArray *)items animated:(BOOL)animated {
@@ -186,12 +187,10 @@ NSAPropertyAssignSetter(setNavigationBar, @"_navigationBar");
 - (void)pushNavigationItem:(UINavigationItem *)item {
     [self __pushNavigationItem:item];
     dlog(DEBUG_NAVIGATIONBAR, @"pushNavigationItem: %@", self.backItem.backBarButtonItem);
-    if (self.backItem.backBarButtonItem == nil) {
-        UIBarButtonItem *barButtonItem = [[UI7BarButtonItem alloc] initWithTitle:nil style:UIBarButtonItemStyleBordered target:nil action:nil];  // this may cause problem if some code depends on existance of this value.
-        barButtonItem.appearanceSuperview = self.backItem;
-        [barButtonItem _tintColorUpdated];
-        self.backItem.backBarButtonItem = barButtonItem;
-    }
+    UIBarButtonItem *barButtonItem = [[UI7BarButtonItem alloc] initWithTitle:NSLocalizedString(@"Back", @"") style:UIBarButtonItemStyleBordered target:nil action:nil];  // this may cause problem if some code depends on existance of this value.
+    barButtonItem.appearanceSuperview = self.backItem;
+    [barButtonItem _tintColorUpdated];
+    self.backItem.backBarButtonItem = barButtonItem;
     item.navigationBar = self;
     [item _tintColorUpdated];
 }
@@ -339,7 +338,7 @@ NSAPropertyAssignSetter(setNavigationBar, @"_navigationBar");
 //    UIBarButtonItem *item = [super backBarButtonItem];
 //    return item;
 //}
-//
+
 //- (void)setBackBarButtonItem:(UIBarButtonItem *)backBarButtonItem {
 //    [super setBackBarButtonItem:backBarButtonItem];
 //}

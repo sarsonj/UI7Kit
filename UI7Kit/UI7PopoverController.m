@@ -23,7 +23,6 @@
 + (void)initialize {
     if (self == [UI7PopoverController class]) {
         Class target = [UIPopoverController class];
-
         [target copyToSelector:@selector(__initWithContentViewController:) fromSelector:@selector(initWithContentViewController:)];
     }
 }
@@ -55,11 +54,11 @@
 @implementation UI7PopoverBackgroundView
 
 - (void)layoutSubviews {
-    self.backgroundColor = [UIColor whiteColor];
-    self.layer.cornerRadius = 10.0f;
+//    self.backgroundColor = [UIColor whiteColor];
+//    self.layer.cornerRadius = 10.0f;
     [super layoutSubviews];
     //self.popoverBackground.image = [self.popoverBackground.image imageByFilledWithColor:[UIColor whiteColor]];
-    self.layer.shadowRadius = 500.0f; // immitate dimming view
+//    self.layer.shadowRadius = 500.0f; // immitate dimming view
 }
 
 @end

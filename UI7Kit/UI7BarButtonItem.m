@@ -63,7 +63,10 @@ NSString *UI7BarButtonItemIconNames[] = {
 }
 
 - (void)_tintColorUpdated {
-    UIFont *font = [UI7Font systemFontOfSize:17.0 attribute:UI7FontAttributeLight];
+    UIFont* font = [UI7Font systemFontOfSize:17.0 attribute:self.style == UIBarButtonItemStyleDone ? UI7FontAttributeMedium : UI7FontAttributeLight];
+    
+
+//    UIFont *font = [UI7Font systemFontOfSize:17.0 attribute:UI7FontAttributeLight];
     UIColor *tintColor = self.tintColor;
     if (tintColor == nil) return;
     /*  FIXME:
@@ -73,8 +76,14 @@ NSString *UI7BarButtonItemIconNames[] = {
     UIImage *backImage = [UIImage imageNamed:@"UI7NavigationBarBackButton"];
     backImage = [backImage imageByFilledWithColor:tintColor];
     [self setBackButtonBackgroundImage:backImage forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    [self setBackButtonBackgroundImage:backImage forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
     backImage = [backImage imageByFilledWithColor:tintColor.highligtedColor];
     [self setBackButtonBackgroundImage:backImage forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+    if (floor(NSFoundationVersionNumber) < NSFoundationVersionNumber_iOS_6_0) {
+        [self setBackButtonBackgroundVerticalPositionAdjustment:-4 forBarMetrics:UIBarMetricsDefault];
+        [self setBackButtonBackgroundVerticalPositionAdjustment:-5 forBarMetrics:UIBarMetricsLandscapePhone];
+        
+    }
     [self setTitleTextAttributes:@{
              UITextAttributeFont:font,
         UITextAttributeTextColor:tintColor,
@@ -117,8 +126,10 @@ NSString *UI7BarButtonItemIconNames[] = {
     if (tintColor == nil) return;
 }
 
+
 - (void)_barButtonItemInit {
-    UIFont *font = [UI7Font systemFontOfSize:17.0 attribute:self.style == UIBarButtonItemStyleDone ? UI7FontAttributeMedium : UI7FontAttributeLight];
+    UIFont* font = [UI7Font systemFontOfSize:17.0 attribute:self.style == UIBarButtonItemStyleDone ? UI7FontAttributeMedium : UI7FontAttributeLight];
+
     [self _barButtonItemInitWithFont:font];
 }
 
@@ -203,7 +214,6 @@ NSString *UI7BarButtonItemIconNames[] = {
         }
     }
     [self _barButtonItemInitWithFont:font];
-
     return self;
 }
 
