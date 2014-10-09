@@ -26,7 +26,6 @@ CGFloat UI7PickerLikeViewRowHeight = 36.0f;
 @property(nonatomic, strong) NSMutableArray            *dividers;
 @property(nonatomic, strong) NSMutableArray            *selectionBars;
 @property(nonatomic, strong) UIView                    *backgroundView;
-@property(nonatomic, assign) NSInteger                  numberOfComponents;
 
 @property(nonatomic, strong) UIImageView               *topGradient;
 @property(nonatomic, strong) UIImageView               *bottomGradient;
@@ -78,7 +77,7 @@ UIImage *UI7PickerLikeViewGradientImage(UIColor *maskColor, CGFloat topGradient,
     CFRelease(gradient);
     UIImage *maskImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-
+    
     CGImageRef maskTemplate = maskImage.CGImage;
     CGImageRef mask = CGImageMaskCreate(CGImageGetWidth(maskTemplate),
                                         CGImageGetHeight(maskTemplate),
@@ -101,13 +100,23 @@ UIImage *UI7PickerLikeViewGradientImage(UIColor *maskColor, CGFloat topGradient,
     self.bottomGradient.userInteractionEnabled = NO;
     self.topLineView = [[[UIView alloc] init] autorelease];
     self.bottomLineView = [[[UIView alloc] init] autorelease];
+    
     self.topLineView.backgroundColor = self.bottomLineView.backgroundColor = [UIColor colorWithWhite:.0f alpha:.09f];
-
+    
+    if ([[UI7PickerView appearance] backgroundColor]) {
+        self.backgroundView = [[[UIView alloc] init] autorelease];
+        self.backgroundView.frame = CGRectMake(.0, .0, self.frame.size.width, self.frame.size.height);
+        self.backgroundView.backgroundColor = [[UI7PickerView appearance] backgroundColor];
+        [self addSubview:self.backgroundView];
+    }
+    
     [self addSubview:self.topGradient];
     [self addSubview:self.bottomGradient];
     [self addSubview:self.topLineView];
     [self addSubview:self.bottomLineView];
-
+    
+    
+    
     self.autoresizesSubviews = YES;
 }
 
@@ -120,7 +129,7 @@ UIImage *UI7PickerLikeViewGradientImage(UIColor *maskColor, CGFloat topGradient,
     self.topLineView.frame = CGRectMake(.0, height, width, 1.0f);
     self.bottomGradient.frame = CGRectMake(.0, height + rowHeight, width, height);
     self.bottomLineView.frame = CGRectMake(.0, height + rowHeight - 1, width, 1.0f);
-
+    
     self.topGradient.image = UI7PickerLikeViewGradientImage(maskColor, .0f, .5f, height);
     self.bottomGradient.image = UI7PickerLikeViewGradientImage(maskColor, .5f, .0f, height);
 }
@@ -129,7 +138,7 @@ UIImage *UI7PickerLikeViewGradientImage(UIColor *maskColor, CGFloat topGradient,
     [self _updateGradient];
 }
 
-- (id)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame {
     frame.size.height = 216.0f;
     frame.size.width = [UIScreen mainScreen].bounds.size.width;
     self = [super initWithFrame:frame];
@@ -137,7 +146,7 @@ UIImage *UI7PickerLikeViewGradientImage(UIColor *maskColor, CGFloat topGradient,
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     CGRect frame = self.frame;
     frame.size.height = 216.0f;
@@ -164,7 +173,7 @@ UIImage *UI7PickerLikeViewGradientImage(UIColor *maskColor, CGFloat topGradient,
         CGRect frame = table.frame;
         frame.size.width = width;
         table.frame = frame;
-
+        
         CGFloat height = (self.frame.size.height - [self rowSizeForComponent:i].height) / 2;
         table.tableHeaderView = [[[UIView alloc] initWithFrame:CGRectMake(.0, .0, 1.0, height)] autorelease];
         table.tableFooterView = [[[UIView alloc] initWithFrame:CGRectMake(.0, .0, 1.0, height)] autorelease];
@@ -186,7 +195,7 @@ UIImage *UI7PickerLikeViewGradientImage(UIColor *maskColor, CGFloat topGradient,
 - (void)setDataSource:(id<UIPickerViewDataSource>)dataSource {
     self->_dataSource = dataSource;
     self.tables = [NSMutableArray array];
-
+    
     NSInteger number = [self numberOfComponents];
     for (NSInteger i = 0; i < number; i++) {
         UI7TableView *table = [[[UI7TableView alloc] initWithFrame:CGRectMake(.0, .0, self.frame.size.width / number, self.frame.size.height)] autorelease];
@@ -251,7 +260,7 @@ UIImage *UI7PickerLikeViewGradientImage(UIColor *maskColor, CGFloat topGradient,
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     NSInteger component = [self.tables indexOfObject:scrollView];
-
+    
     if ([self.delegate respondsToSelector:@selector(pickerView:didSelectRow:inComponent:)]) {
         NSInteger index = [self selectedRowInComponent:component];
         [self.delegate pickerView:(id)self didSelectRow:index inComponent:component];
@@ -277,14 +286,14 @@ UIImage *UI7PickerLikeViewGradientImage(UIColor *maskColor, CGFloat topGradient,
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     NSInteger componentIndex = [self.tables indexOfObject:tableView];
     if (componentIndex == NSNotFound) return 0;
-
+    
     return [self.dataSource pickerView:(id)self numberOfRowsInComponent:componentIndex];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSInteger componentIndex = [self.tables indexOfObject:tableView];
     if (componentIndex == NSNotFound) return nil;
-
+    
     NSString *identifier = [@"%d" format0:nil, componentIndex];
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (cell == nil) {
@@ -336,7 +345,7 @@ UIImage *UI7PickerLikeViewGradientImage(UIColor *maskColor, CGFloat topGradient,
     id value = self->_selectionIndicatorColor;
     self->_selectionIndicatorColor = [selectionIndicatorColor retain];
     [value release];
-
+    
     self.topLineView.backgroundColor = selectionIndicatorColor;
     self.bottomLineView.backgroundColor = selectionIndicatorColor;
 }
@@ -368,8 +377,8 @@ NSAPropertyGetter(bottomGradient, @"_bottomGradient");
 
 @implementation UIPickerView (Patch)
 
-- (id)__initWithFrame:(CGRect)frame { assert(NO); return nil; }
-- (id)__initWithCoder:(NSCoder *)aDecoder { assert(NO); return nil; }
+- (instancetype)__initWithFrame:(CGRect)frame { assert(NO); return nil; }
+- (instancetype)__initWithCoder:(NSCoder *)aDecoder { assert(NO); return nil; }
 
 @end
 
@@ -390,7 +399,7 @@ NSAPropertyGetter(bottomGradient, @"_bottomGradient");
     [self exportSelector:@selector(initWithCoder:) toClass:target];
 }
 
-- (id)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame {
     NSString *className = self.class.name;
     if ([UIDevice currentDevice].needsUI7Kit && ([className isEqual:@"UIPickerView"] || [className isEqual:@"UI7PickerView"])) {
         [self release];
@@ -400,7 +409,7 @@ NSAPropertyGetter(bottomGradient, @"_bottomGradient");
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
     NSString *className = self.class.name;
     if ([UIDevice currentDevice].needsUI7Kit && ([className isEqual:@"UIPickerView"] || [className isEqual:@"UI7PickerView"])) {
         [self release];

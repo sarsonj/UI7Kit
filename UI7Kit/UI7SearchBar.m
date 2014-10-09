@@ -34,8 +34,8 @@ NSAPropertyGetter(scopeBar, @"_scopeBar");
 
 @implementation UISearchBar (Patch)
 
-- (id)__initWithCoder:(NSCoder *)aDecoder { assert(NO); return nil; }
-- (id)__initWithFrame:(CGRect)frame { assert(NO); return nil; }
+- (instancetype)__initWithCoder:(NSCoder *)aDecoder { assert(NO); return nil; }
+- (instancetype)__initWithFrame:(CGRect)frame { assert(NO); return nil; }
 
 - (void)_searchBarInit {
     CGFloat height = self.frame.size.height;
@@ -47,7 +47,10 @@ NSAPropertyGetter(scopeBar, @"_scopeBar");
     UIGraphicsEndImageContext();
     self.backgroundColor = [UIColor colorWith8bitRed:201 green:201 blue:205 alpha:255];
     self.backgroundImage = backgroundImage;
-    self.placeholder = @" ";
+    if (self.placeholder == nil || [self.placeholder stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]].length == 0) {
+        self.placeholder = @" ";
+    }
+
     
     UIBarButtonItem *searchBarButton = [UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil];
     [searchBarButton setBackgroundImage:[UIColor clearColor].image forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
@@ -99,7 +102,7 @@ NSAPropertyGetter(scopeBar, @"_scopeBar");
     [self exportSelector:@selector(initWithFrame:) toClass:target];
 }
 
-- (id)initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [self __initWithFrame:frame];
     if (self) {
         [self _searchBarInit];
@@ -107,7 +110,7 @@ NSAPropertyGetter(scopeBar, @"_scopeBar");
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [self __initWithCoder:aDecoder];
     if (self != nil) {
         [self _searchBarInit];
